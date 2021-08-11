@@ -1,7 +1,13 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def naverMapKey = properties.getProperty('naver.map.key')
+
 
 android {
     compileSdkVersion 30
@@ -15,6 +21,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [mapKey: naverMapKey]
+
+        buildConfigField "String", "MAP_KEY_ID", properties['map_key_id']
+        buildConfigField "String", "MAP_KEY", properties['map_key']
     }
 
     buildTypes {
@@ -22,6 +33,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -42,4 +57,15 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // 네이버 지도 SDK
+    implementation 'com.naver.maps:map-sdk:3.12.0'
 }
